@@ -1,0 +1,4 @@
+dc_name storage computation avlble_capcity dc_status dc_id
+dc1 40 200 900 0 
+dc2 60 100 600 0 
+

@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package mmu;
+
+service AgMetaData {
+    rpc ResolvePath (Path) returns (Location);
+    rpc RemoveMetadata (Path) returns (Empty);
+    rpc CreateMetadata (Path) returns (Location);
+    rpc CreateDistributedMetadata (Path) returns (Empty);
+    rpc CreateBatchMetadata(Batch) returns (Empty);
+    rpc UserIndex (Attr) returns (Empty);
+    rpc DoSearch (Sdata) returns (Sdata);
+    rpc AutoIndex (LocPath) returns (Empty);
+    rpc RemoveIndex (Path) returns (Empty);
+    rpc IndexAFile (LocPath) returns (Empty);
+    rpc DTU_sink (DTU_Path) returns (DTU_Path);
+    rpc DTU_src (DTU_Path) returns (Empty);
+    rpc DTU_mark (Path) returns (Empty);
+}
+
+
+message Empty {}
+
+message Path {
+    string path = 1;
+    int32 loc = 2;
+}
+
+message Location {
+    int32 loc = 1;
+}
+
+message Batch
+{
+   string batch_sql = 1;
+}
+
+message Attr {
+  string key=1;
+  string val=7;//
+  string path=2;
+  string type=3;
+  string tval=4;
+  float fval=5;
+  int32 ival=6;
+}
+
+message Sdata {
+  string key=1;
+  string condition=2;
+  string value=3;
+  string bvalue=5;
+  repeated string path=4;
+}
+
+message LocPath{
+  string loc=1;
+  string path=2;
+  repeated string attrs=3;
+}
+
+message DTU_Path {
+  string path = 1;
+  string uri = 2;
+}

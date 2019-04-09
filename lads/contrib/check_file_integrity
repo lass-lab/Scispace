@@ -1,0 +1,88 @@
+#!/usr/bin/perl
+#
+
+# Copyright (c) 2014  	UT-Battelle, LLC                       
+#                       All rights reserved.
+# $COPYRIGHT$
+#
+# Additional copyrights may follow
+#
+# $HEADER$
+
+use strict;
+use warnings "all";
+use Getopt::Long;
+
+my $sinkdir 	= "";
+my $srcdir	= "";
+my $help	= 0;
+my $error_found	= 0;
+
+GetOptions(
+    "sink-dir=s"	=> \$sinkdir,
+    "src-dir=s"         => \$srcdir,
+    "help"          	=> \$help,
+);
+
+sub print_help ()
+{
+    print "Usage: $0 --sink-dir <SINK_DIR> --src-dir <SRC_DIR>\n";
+    print "\t--sink-dir: specify the sink directory\n";
+    print "\t--src-dir:  specify the source directory\n";
+}
+
+if ($help) {
+	print_help();
+	exit (0);
+}
+
+if (!-d $sinkdir) {
+	print "ERROR: sink directory ($sinkdir) does not exist\n";
+	print_help();
+	exit (1);
+}
+
+if (!-d $srcdir) {
+	print "ERROR: source directory ($srcdir) does not exist\n";
+	print_help();
+	exit (1);
+}
+
+
+opendir (SRCDIR, $srcdir) or die $!;
+opendir (SINKDIR, $sinkdir) or die $!;
+
+while (my $file = readdir (SRCDIR)) {
+	if ($file =~ /^[.]/) {
+		next;
+	}
+
+	print ("Checking $file...\n");
+	my $fullsinkname = "$sinkdir/$file";
+	my $fullsrcname = "$srcdir/$file";
+	if (!-e "$fullsinkname") {
+		print "ERROR: $fullsinkname does not exist\n"; 
+		$error_found = 1;
+	} 
+
+	my $md5sum_srcfile = `md5sum $fullsrcname | awk '{ print \$1 }'`;
+	print "MD5SUM $fullsrcname: $md5sum_srcfile";
+
+	my $md5sum_sinkfile = `md5sum $fullsinkname | awk '{ print \$1 }'`;
+        print "MD5SUM $fullsinkname: $md5sum_sinkfile";
+
+	if ($md5sum_srcfile ne $md5sum_sinkfile) {
+		print "ERROR: MD5SUM differs for $file\n";
+		$error_found = 1;
+	}
+}
+
+closedir (SRCDIR);
+closedir (SINKDIR);
+
+if ($error_found == 1) {
+	exit (1);
+} else {
+	exit (0);
+}
+

@@ -1,0 +1,4 @@
+dg_name dc_name network
+fast7 dc1 900
+fast7 dc2 90
+

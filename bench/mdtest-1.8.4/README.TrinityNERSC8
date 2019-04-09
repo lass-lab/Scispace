@@ -1,0 +1,136 @@
+﻿mdtest Benchmark Instructions
+Introduction
+mdtest is intended to characterize metadata performance.  It shall be run using the 
+instructions as described below.
+
+Observed benchmark performance shall be obtained from a file system configured as 
+closely as possible to the proposed global file system. If the proposed solution includes 
+multiple file access protocols (e.g., pNFS or NFS) then benchmark results should be 
+provided for all such protocols.
+
+Performance projections for the larger case are permissible if they are derived from a 
+similar system that is considered an earlier generation system.  Projections shall be 
+rigorously derived, easily understood and thoroughly documented.
+
+Submission Guidelines
+
+Benchmark results (or projections including original results) for the proposed system 
+shall be recorded in the spreadsheet provided. Note that in the supplied spreadsheet, the 
+“Proposed System Node Count” entry refers to the value for the full, proposed system, 
+whether benchmarked or projected. A paper version of all completed tables shall be 
+submitted as part of the RFP response. Additionally, the Offeror shall submit 
+electronically all completed tables, benchmark codes and output files and documentation 
+on any code optimizations or configuration changes on a CD or similar medium. The 
+submitted source shall be in a form that can be readily compiled on the proposed system. 
+Do not include object and executable files, core dump files or large binary data files in 
+the electronic submission. An audit trail showing any changes made to the benchmark 
+codes must be supplied and it must be sufficient for the University to determine that the 
+changes made conform to the spirit of the benchmark and do not violate any specific 
+restrictions on the various benchmark codes.
+
+If performance projections are used, this must be clearly indicated. The output files on 
+which the projections are based, and a description of the projection method must be 
+included. In addition, each system used for benchmark projections must be described. 
+Enter the corresponding letter of the “System” column of Table 3 into the “System” 
+column of the benchmark result tables. For solutions that use multiple phases of 
+technology to offer the University the best value, the Offeror should duplicate the tables 
+and provide the performance information for each phase.
+
+Modifications
+Modifications to the benchmark are only permissible to enable correct execution on the 
+target platform.  Any modifications must be fully documented and reported back to the 
+Requestor.  No source code changes related to optimization are permissible.
+
+Run Rules
+The intent of this benchmark is to measure system performance for file metadata 
+operations that access disk.  Because it is impractical to fully capture and represent within 
+a benchmark the actual data sizes for I/O operations carried out by the users, the 
+benchmarks utilize smaller working set sizes; however, since disk I/O remains the rate-
+limiting portion of the I/O workload, the benchmarks must be run in such a way as to 
+perform I/O to disk and not to a DRAM cache.  Although optimizations may be possible 
+that enable significant caching or buffering of the transferred data within system memory, 
+and although such optimizations may be beneficial in a production environment, you are 
+not permitted to engage in such optimizations for the benchmark runs. 
+The Offeror must provide an end-to-end description of the environment in which each 
+benchmark was run.  This will include:
+•	Client and server system configurations, including node and processor counts, 
+processor models, memory size and speed, and OS (names and versions)
+•	Storage used for global file system and storage configurations.
+•	Network fabric used to connect servers, clients, and storage, including network 
+configuration settings.  
+•	Client and server configuration settings.  These should include:
+o	Client and server sysctl settings
+o	Driver options
+o	Network interface options
+o	File system configuration options
+•	Compiler name and version, compiler options, and libraries used to build 
+benchmarks.
+
+Benchmark Description
+
+mdtest
+mdtest is an MPI program that measures performance of various metadata operations. It 
+uses MPI to coordinate the operations and to collect the results.
+
+Coding
+The code is composed of one C file
+mdtest.c
+
+Building the Code
+MPI and gmake are required in order to build the code. 
+
+To build the code, un-tar the archive, cd to the src directory (which will be named 
+“mdtest-<version>” and type “gmake.”  The resulting executable is in the current 
+working directory. You may also use 
+“% make clean” in the highest level directory to remove dependent files.  
+
+Required Runs
+mdtest will be run to test the rate of file creation and deletion under the following sets of 
+circumstances (separately):
+•	Creating 1,048,576 files by one process in one directory;
+•	Removing those 1,048,576 files;
+•	Creating 1,048,576 files by NP processes in separate directories, one directory per 
+process. 
+•	Removing those 1,048,576 files;
+•	Creating 1,048,576 files by NP processes in the same directory;
+•	Removing those 1,048,576 files;
+•	Creating 1 file by NP processes.
+•	Removing that 1 file by NP processes.
+
+where NP will be the number of processors:
+a)	On one node that yields the peak results for a single node.
+b)	On multiple nodes that yields the peak results for the test system.
+c)	That exist on the test system.
+d)	That will exist on the delivered system (a projection based on data gathered).
+
+Running the Code
+When running mdtest you specify the number of files each process will create and not the 
+total number of files to create. 
+
+The exact invocation of the code depends on your MPI implementation. The code should 
+be run with something like:
+
+aprun –n <#pes> -N <#pes-per-node> ./mdtest -n <1048576/#pes> -d <path-
+to-pfs>/<nn_shared-dir>/ -F -C -T -r -N <#pes-per-node>
+
+This command will execute mdtest with the number of processes you specify, each 
+creating its share of the required 1,048,576 files. All files will be created in a single 
+directory, <path-to-pfs>/<nn_shared-dir>. The file create, stat, and deletion portions will 
+be timed. Note well the -d option and its argument. This is the directory in which the 
+test's files are created; this argument MUST BE A FULL PATH.
+
+To have each task to write files in its own directory, add the -u switch.
+aprun –n <#pes> -N <#pes-per-node> ./mdtest -n <1048576/#pes> -d <path-
+to-pfs>/<nn_unique-dir>/ -F -C -T -r -N <#pes-per-node> -u
+
+There is a requirement to do a N-1 test. The command for this test is:
+
+aprun –n <#pes> -N <#pes-per-node> ./mdtest –S -C -T -r -n 1 -d <path-
+to-pfs>/<n1_shared-dir>/ -F
+
+This command will execute mdtest with the number of processes you specify, each 
+creating the same 1 file per test for a total of 1 file. The file is shared (-S), and will be 
+created in single directory, <path-to-pfs>/<n1_shared-dir>. The file create, stat, and 
+deletion portions will be timed. Note well the -d option and its argument. This is the 
+directory in which the test's files are created; this argument MUST BE A FULL PATH.
+

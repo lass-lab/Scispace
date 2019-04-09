@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package unimd;
+
+service UniMetaData {
+    rpc ResolvePath (Path) returns (Location);
+    rpc RemoveMetadata (Path) returns (Empty);
+    rpc CreateMetadata (Path) returns (Location);
+    rpc CreateBatchMetadata(Batch) returns (Empty);
+}
+
+
+message Empty {}
+
+message Path {
+    string path = 1;
+}
+
+message Location {
+    int32 loc = 1;
+}
+
+message Batch
+{
+   string batch_sql = 1;
+}
+
