@@ -146,13 +146,15 @@ Run
 * SciFS client
 
    ```
-   ./agu [fuse options] [mount point]
+   ./scifs [fuse options] [mount point]
    ```
 
-* SciFS DTN
+* Distributed Metadata Managers
 
+   - Iterate this ob each data transfer node (DTN)
    ```
-   ./makedb.sh
+   ./create_msddb.sh
+   ./create_sdsdb.sh
    ./mmu
    ```
 
