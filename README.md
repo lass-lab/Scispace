@@ -151,7 +151,7 @@ Run
 
 * Distributed Metadata Managers
 
-   - Iterate this ob each data transfer node (DTN)
+   - Iterate this on each data transfer node (DTN)
    ```
    ./create_msddb.sh
    ./create_sdsdb.sh
