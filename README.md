@@ -1,7 +1,7 @@
 SciSpace: A scientific collaboration workspace for geo-distributed HPC data centers
-Awais Khan, Taeuk Kim, Hyunki Byun, Youngjae Kim
+Authors: Awais Khan, Taeuk Kim, Hyunki Byun, Youngjae Kim
 
-Journal published in Future Generation Computing Systems (FGCS 2019)
+Published in Future Generation Computing Systems (FGCS 2019)
 
 Contributor: Awais Khan
 khana@ornl.gov
