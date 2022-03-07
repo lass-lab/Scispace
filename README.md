@@ -1,4 +1,10 @@
-# Scispace (beta version)
+SciSpace: A scientific collaboration workspace for geo-distributed HPC data centers
+Awais Khan, Taeuk Kim, Hyunki Byun, Youngjae Kim
+
+Journal published in Future Generation Computing Systems (FGCS 2019)
+
+Contributor: Awais Khan
+khana@ornl.gov
 
 The prototype of a collaboration friendly file system, to empower collaborators with several features, such as selective data export, unified data visualization and scientific search and discovery services on top of unified file system interface.
 
